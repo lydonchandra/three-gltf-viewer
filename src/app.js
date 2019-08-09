@@ -82,7 +82,7 @@ class App {
     let rootFile;
     let rootPath;
     Array.from(fileMap).forEach(([path, file]) => {
-      if (file.name.match(/\.(gltf|glb)$/)) {
+      if (file.name.match(/\.(gltf|glb|b3dm)$/)) {
         rootFile = file;
         rootPath = path.replace(file.name, '');
       }
