@@ -5,6 +5,7 @@ const environments = require('../assets/environment/index');
 const createVignetteBackground = require('three-vignette-background');
 
 require('three/examples/js/loaders/GLTFLoader');
+require('three/examples/js/loaders/B3DMLoader');
 require('three/examples/js/loaders/DRACOLoader');
 require('three/examples/js/loaders/DDSLoader');
 require('three/examples/js/controls/OrbitControls');
@@ -183,12 +184,14 @@ module.exports = class Viewer {
 
       });
 
-      const loader = new THREE.GLTFLoader(manager);
-      loader.setCrossOrigin('anonymous');
-      loader.setDRACOLoader( new THREE.DRACOLoader() );
+      const gltfLoader = new THREE.GLTFLoader(manager);
+      gltfLoader.setCrossOrigin('anonymous');
+      gltfLoader.setDRACOLoader( new THREE.DRACOLoader() );
+      const b3dmLoader = new THREE.B3DMLoader(manager, gltfLoader);
+
       const blobURLs = [];
 
-      loader.load(url, (gltf) => {
+      b3dmLoader.load(url, (gltf) => {
 
         const scene = gltf.scene || gltf.scenes[0];
         const clips = gltf.animations || [];
