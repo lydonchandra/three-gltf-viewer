@@ -41,7 +41,7 @@
     "query-string": "^4.3.4",
     "serve": "^10.0.2",
     "simple-dropzone": "^0.5.1",
-    "three": "^0.105.1",
+    "three": "https://github.com/lydonchandra/three.js#feature/B3DMLoader",
     "three-vignette-background": "^1.0.3",
     "zipjs-browserify": "^1.0.1"
   },
@@ -50,8 +50,8 @@
     "budo": "^11.5.0",
     "chalk": "^2.1.0",
     "concurrently": "^3.5.0",
-    "electron": "^3.0.2",
-    "electron-packager": "^12.1.2",
+    "electron": "^7.1.2",
+    "electron-packager": "^14.1.0",
     "glslify": "^6.3.1",
     "node-fetch": "^1.7.3",
     "watchify": "^3.11.0"
