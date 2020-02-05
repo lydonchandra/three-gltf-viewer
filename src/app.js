@@ -79,20 +79,19 @@ class App {
    * @param  {Map<string, File>} fileMap
    */
   load (fileMap) {
-    let rootFile;
+    let rootFiles = [];
     let rootPath;
     Array.from(fileMap).forEach(([path, file]) => {
       if (file.name.match(/\.(gltf|glb|b3dm)$/)) {
-        rootFile = file;
         rootPath = path.replace(file.name, '');
+        rootFiles.push(file);
       }
     });
 
-    if (!rootFile) {
+    if ( rootFiles.length == 0 ) {
       this.onError('No .gltf or .glb asset found.');
     }
-
-    this.view(rootFile, rootPath, fileMap);
+    this.view(rootFiles, rootPath, fileMap);
   }
 
   /**
@@ -101,30 +100,50 @@ class App {
    * @param  {string} rootPath
    * @param  {Map<string, File>} fileMap
    */
-  view (rootFile, rootPath, fileMap) {
+  view (rootFiles, rootPath, fileMap) {
 
     if (this.viewer) this.viewer.clear();
 
     const viewer = this.viewer || this.createViewer();
 
-    const fileURL = typeof rootFile === 'string'
-      ? rootFile
-      : URL.createObjectURL(rootFile);
+    let fileURLs = []
+    rootFiles.forEach( rootFile => {
+      const fileURL = typeof rootFile === 'string'
+        ? rootFile
+        : URL.createObjectURL(rootFile);
+
+      fileURLs.push( fileURL );
+    })
 
     const cleanup = () => {
       this.hideSpinner();
       if (typeof rootFile === 'object') URL.revokeObjectURL(fileURL);
     };
 
-    viewer
-      .load(fileURL, rootPath, fileMap)
-      .catch((e) => this.onError(e))
-      .then((gltf) => {
-        if (!this.options.kiosk) {
-          this.validationCtrl.validate(fileURL, rootPath, fileMap, gltf);
-        }
-        cleanup();
-      });
+    if ( fileURLs.length > 1 ) {
+      viewer
+        .loadMultiple(fileURLs, rootPath, fileMap)
+        .catch((e) => this.onError(e))
+        .then((gltf) => {
+          cleanup();
+        });
+
+
+
+    } else {
+      let fileURL = fileURLs[0]
+
+      viewer
+        .load(fileURL, rootPath, fileMap)
+        .catch((e) => this.onError(e))
+        .then((gltf) => {
+          if (!this.options.kiosk) {
+            this.validationCtrl.validate(fileURL, rootPath, fileMap, gltf);
+          }
+          cleanup();
+        });
+
+    }
   }
 
   /**

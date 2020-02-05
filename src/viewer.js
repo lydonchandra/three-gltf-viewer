@@ -157,6 +157,75 @@ module.exports = class Viewer {
 
   }
 
+  loadMultiple ( urls, rootPath, assetMap ) {
+
+    const baseURL = THREE.LoaderUtils.extractUrlBase(urls[0]);
+
+    // Load.
+    return new Promise((resolve, reject) => {
+
+      const manager = new THREE.LoadingManager();
+
+      // Intercept and override relative URLs.
+      manager.setURLModifier((url, path) => {
+
+        const normalizedURL = rootPath + url
+          .replace(baseURL, '')
+          .replace(/^(\.?\/)/, '');
+
+        if (assetMap.has(normalizedURL)) {
+          const blob = assetMap.get(normalizedURL);
+          const blobURL = URL.createObjectURL(blob);
+          blobURLs.push(blobURL);
+          return blobURL;
+        }
+
+        return (path || '') + url;
+
+      });
+
+      const gltfLoader = new THREE.GLTFLoader(manager);
+      gltfLoader.setCrossOrigin('anonymous');
+      gltfLoader.setDRACOLoader( new THREE.DRACOLoader() );
+      const b3dmLoader = new THREE.B3DMLoader(manager, gltfLoader);
+
+      const blobURLs = [];
+
+      let idx = 0
+      for ( let url of urls ) {
+        idx += 1
+
+        b3dmLoader.load(url, (gltf) => {
+
+          const scene = gltf.scene || gltf.scenes[0];
+          const clips = gltf.animations || [];
+          if ( idx === 0 ) {
+
+            this.setContent(scene, clips);
+
+          } else {
+
+            this.appendContent(scene, clips);
+
+          }
+
+
+          blobURLs.forEach(URL.revokeObjectURL);
+
+          // See: https://github.com/google/draco/issues/349
+          // THREE.DRACOLoader.releaseDecoderModule();
+
+          resolve(gltf);
+
+        }, undefined, reject);
+      }
+
+
+    });
+
+  }
+
+
   load ( url, rootPath, assetMap ) {
 
     const baseURL = THREE.LoaderUtils.extractUrlBase(url);
@@ -208,6 +277,10 @@ module.exports = class Viewer {
 
     });
 
+  }
+
+  appendContent ( object, clips ) {
+    this.scene.add(object);
   }
 
   /**
