@@ -157,7 +157,7 @@ module.exports = class Viewer {
 
   }
 
-  loadMultiple ( urls, rootPath, assetMap ) {
+  load ( urls, rootPath, assetMap ) {
 
     const baseURL = THREE.LoaderUtils.extractUrlBase(urls[0]);
 
@@ -193,8 +193,6 @@ module.exports = class Viewer {
 
       let idx = 0
       for ( let url of urls ) {
-        idx += 1
-
         b3dmLoader.load(url, (gltf) => {
 
           const scene = gltf.scene || gltf.scenes[0];
@@ -209,6 +207,7 @@ module.exports = class Viewer {
 
           }
 
+          idx += 1
 
           blobURLs.forEach(URL.revokeObjectURL);
 
@@ -226,7 +225,7 @@ module.exports = class Viewer {
   }
 
 
-  load ( url, rootPath, assetMap ) {
+  loadOri ( url, rootPath, assetMap ) {
 
     const baseURL = THREE.LoaderUtils.extractUrlBase(url);
 
@@ -300,9 +299,9 @@ module.exports = class Viewer {
     object.position.x += (object.position.x - center.x);
     object.position.y += (object.position.y - center.y);
     object.position.z += (object.position.z - center.z);
-    this.controls.maxDistance = size * 10;
+    this.controls.maxDistance = size * 10000;
     this.defaultCamera.near = size / 100;
-    this.defaultCamera.far = size * 100;
+    this.defaultCamera.far = size * 1000000;
     this.defaultCamera.updateProjectionMatrix();
 
     if (this.options.cameraPosition) {

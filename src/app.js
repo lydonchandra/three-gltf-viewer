@@ -120,30 +120,28 @@ class App {
       if (typeof rootFile === 'object') URL.revokeObjectURL(fileURL);
     };
 
-    if ( fileURLs.length > 1 ) {
-      viewer
-        .loadMultiple(fileURLs, rootPath, fileMap)
-        .catch((e) => this.onError(e))
-        .then((gltf) => {
-          cleanup();
-        });
+    viewer
+      .load(fileURLs, rootPath, fileMap)
+      .catch((e) => this.onError(e))
+      .then((gltf) => {
+        cleanup();
+      });
 
 
-
-    } else {
-      let fileURL = fileURLs[0]
-
-      viewer
-        .load(fileURL, rootPath, fileMap)
-        .catch((e) => this.onError(e))
-        .then((gltf) => {
-          if (!this.options.kiosk) {
-            this.validationCtrl.validate(fileURL, rootPath, fileMap, gltf);
-          }
-          cleanup();
-        });
-
-    }
+    // else {
+    //   let fileURL = fileURLs[0]
+    //
+    //   viewer
+    //     .load(fileURL, rootPath, fileMap)
+    //     .catch((e) => this.onError(e))
+    //     .then((gltf) => {
+    //       if (!this.options.kiosk) {
+    //         this.validationCtrl.validate(fileURL, rootPath, fileMap, gltf);
+    //       }
+    //       cleanup();
+    //     });
+    //
+    // }
   }
 
   /**
