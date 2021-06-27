@@ -1,3 +1,16 @@
+
+# B3DM Viewer
+
+![B3DM Viewer](./screenshot1.png?raw=true)
+
+This B3DM Viewer utilises forked THREE.js from 
+https://github.com/lydonchandra/three.js/tree/feature/B3DMLoader  
+
+
+---
+Original UPstream README.md
+
+
 # glTF Viewer
 
 Preview glTF 2.0 models in WebGL using three.js and a drag-and-drop interface.
